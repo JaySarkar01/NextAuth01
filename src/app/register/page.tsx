@@ -56,21 +56,6 @@ const Register = () => {
       setError("Error, try again...");
       console.error(error);
     }
-
-    // try {
-    //   // Log the data to the console
-    //   console.log("Email:", email);
-    //   console.log("Password:", password);
-    
-    //   // Simulate a successful response
-    //   setError(""); // Clear any previous error messages
-    
-    //   // Uncomment the line below if you want to simulate redirection after a successful registration
-    //   // router.push("/login");
-    // } catch (error) {
-    //   setError("Error, try again...");
-    //   console.error(error);
-    // }
     
   };
 

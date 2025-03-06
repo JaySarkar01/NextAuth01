@@ -32,7 +32,7 @@ export const POST = async (request: Request) => {
     // Respond with success
     return NextResponse.json({ message: "User is registered successfully!" }, { status: 200 });
 
-  } catch (err: any) {
+  } catch (err) {
     console.error("Error in POST /register:", err);
     return NextResponse.json({ message: "Internal Server Error" }, { status: 500 });
   }
