@@ -1,53 +1,77 @@
 "use client"
-import React, {useState} from "react";
+import {useState} from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+
 const Register = () => {
 
   const [error, setError] = useState("");
-  const router = useRouter();
+  const [email, setEmail] = useState("");
+  const [pass, setPass]= useState("");
 
   const isValidEmail = (email: string) => {
     const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
     return emailRegex.test(email);
   }
-
-  const handleSubmit = async (e: any) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const email = e.target[0].value;
-    const password = e.target[1].value;
-
-    if(!isValidEmail(email)){
-      setError("this email is invalid!");
+  
+    // Extract email and password from the form elements
+    const form = e.currentTarget;
+    const email = (form[0] as HTMLInputElement).value;
+    const password = (form[1] as HTMLInputElement).value;
+  
+    // Validate email
+    if (!isValidEmail(email)) {
+      setError("This email is invalid!");
       return;
     }
-
-    if(!password || password.lenght < 8){
-      setError("invalid password!");
+  
+    // Validate password
+    if (!password || password.length < 8) {
+      setError("Invalid password! Password must be at least 8 characters.");
       return;
     }
-
-    try{
-      const res = await fetch("/api/register",{
+  
+    try {
+      const res = await fetch("/api/register", {
         method: "POST",
         headers: {
-          "Content-Type":"application/json",
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           email,
-          password
-        })
-      })
-      if(res.status === 400){
-        setError("this email is already registered!");
-      }if(res.status === 200){
+          password,
+        }),
+      });
+  
+      if (res.status === 400) {
+        setError("This email is already registered!");
+      } else if (res.status === 200) {
         setError("");
-        router.push("/login");
+        // router.push("/login");
+      } else {
+        setError("Unexpected error. Please try again.");
       }
-    }catch(error){
+    } catch (error) {
       setError("Error, try again...");
-      console.log(error);
+      console.error(error);
     }
+
+    // try {
+    //   // Log the data to the console
+    //   console.log("Email:", email);
+    //   console.log("Password:", password);
+    
+    //   // Simulate a successful response
+    //   setError(""); // Clear any previous error messages
+    
+    //   // Uncomment the line below if you want to simulate redirection after a successful registration
+    //   // router.push("/login");
+    // } catch (error) {
+    //   setError("Error, try again...");
+    //   console.error(error);
+    // }
+    
   };
 
   return (
@@ -56,7 +80,10 @@ const Register = () => {
         <h1 className="text-4xl text-center font-semibold mb-8">Register</h1>
         <form onSubmit={handleSubmit}>
           <input
-            type="text"
+            type="email"
+            value={email
+            }
+            onChange={(e)=>setEmail(e.target.value)}
             className="w-full border border-gray-300 text-black rounded px-3 py-2 mb-4 focus:border-blue-400 focus:text-black bg-white"
             placeholder="Email"
             required
@@ -65,6 +92,8 @@ const Register = () => {
             type="password"
             className="w-full border border-gray-300 text-black rounded px-3 py-2 mb-4 focus:border-blue-400 focus:text-black bg-white"
             placeholder="password"
+            value={pass}
+            onChange={(e)=>setPass(e.target.value)}
             required
           />
           <button
